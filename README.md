@@ -6,6 +6,8 @@ its title, channel, duration and a link back to YouTube. A static viewer steps t
 
 Live site: **https://somphol.github.io/youtube-slide-decks/**
 
+![Deck viewer](docs/deck.png)
+
 This is a reference library, not a video host. Nothing downloads video.
 
 ## Viewer
