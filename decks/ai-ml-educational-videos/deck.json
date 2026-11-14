@@ -1,0 +1,25 @@
+{
+  "id": "ai-ml-educational-videos",
+  "title": "AI/ML Educational Videos",
+  "description": "Talks and explainers on how large language models actually work.",
+  "createdAt": "2026-11-14T21:31:00.140Z",
+  "updatedAt": "2026-11-14T21:31:01.271Z",
+  "slides": [
+    {
+      "id": "I2QhfZ0aVmk",
+      "type": "video",
+      "videoId": "I2QhfZ0aVmk",
+      "url": "https://www.youtube.com/watch?v=I2QhfZ0aVmk",
+      "title": "Give Me 1 Hour, I'll Make LLM Inference Engines Click Forever",
+      "author": "Zachary Huang",
+      "authorUrl": "https://www.youtube.com/@ZacharyLLM",
+      "durationSeconds": 3462,
+      "duration": "57:42",
+      "thumbnail": "thumbnails/I2QhfZ0aVmk.jpg",
+      "thumbnailUrl": null,
+      "thumbnailQuality": "maxresdefault",
+      "note": "",
+      "addedAt": "2026-11-14T21:31:01.270Z"
+    }
+  ]
+}

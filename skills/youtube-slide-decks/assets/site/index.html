@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YouTube Slide Decks</title>
+  <meta name="description" content="A collection of YouTube videos arranged as slide decks.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d10'/%3E%3Cpath d='M25 20l20 12-20 12z' fill='%23ff3d3d'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Slide Decks</span>
+    </a>
+    <label class="search">
+      <span class="visually-hidden">Search decks</span>
+      <input id="search" type="search" placeholder="Search decks" autocomplete="off" spellcheck="false">
+    </label>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">YouTube collection</p>
+      <h1>Slide decks from videos</h1>
+      <p class="lede">Each deck collects video thumbnails in the order you chose. Open one and step through it with the arrow keys.</p>
+      <p class="hint">Add videos with the <code>youtube-slide-decks</code> skill or <code>node scripts/deck.mjs add …</code></p>
+    </section>
+
+    <div id="stats" class="stats" aria-live="polite"></div>
+    <div id="deck-grid" class="deck-grid" aria-live="polite"></div>
+    <p id="empty" class="empty" hidden>No decks yet. Ask the skill to create one.</p>
+    <p id="error" class="empty" hidden></p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Thumbnails belong to their creators. Every card links back to YouTube.</p>
+  </footer>
+
+  <script type="module" src="assets/app.js"></script>
+</body>
+</html>

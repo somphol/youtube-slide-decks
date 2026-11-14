@@ -1,0 +1,14 @@
+{
+  "name": "youtube-slide-decks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "list": "node scripts/deck.mjs list",
+    "add": "node scripts/deck.mjs add",
+    "export": "node scripts/deck.mjs export --all",
+    "serve": "node scripts/deck.mjs serve",
+    "verify": "node scripts/deck.mjs verify",
+    "sync-site": "cp -R skills/youtube-slide-decks/assets/site/. .",
+    "install-skill": "rm -rf \"$HOME/.config/opencode/skills/youtube-slide-decks\" && cp -R skills/youtube-slide-decks \"$HOME/.config/opencode/skills/\""
+  }
+}

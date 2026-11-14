@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deck — YouTube Slide Decks</title>
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d10'/%3E%3Cpath d='M25 20l20 12-20 12z' fill='%23ff3d3d'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body class="deck-page">
+  <header class="deck-bar">
+    <a class="back" href="./"><span aria-hidden="true">←</span> All decks</a>
+    <div class="deck-heading">
+      <h1 id="deck-title">Deck</h1>
+      <p id="deck-meta" class="meta"></p>
+    </div>
+    <div class="bar-actions">
+      <button id="btn-grid" class="btn ghost" type="button" aria-pressed="false">Grid</button>
+      <button id="btn-full" class="btn ghost" type="button">Fullscreen</button>
+    </div>
+  </header>
+
+  <main id="stage" class="stage">
+    <section id="slide" class="slide" hidden>
+      <a id="thumb-link" class="thumb" target="_blank" rel="noopener">
+        <img id="slide-thumb" alt="" fetchpriority="high">
+        <span class="play" aria-hidden="true"></span>
+        <span id="duration" class="duration" hidden></span>
+      </a>
+      <div class="slide-info">
+        <p id="counter" class="counter"></p>
+        <h2 id="slide-title"></h2>
+        <p id="slide-author" class="channel"></p>
+        <p id="slide-note" class="note" hidden></p>
+        <div class="slide-actions">
+          <a id="watch" class="btn primary" target="_blank" rel="noopener">Watch on YouTube</a>
+          <button id="copy" class="btn" type="button">Copy link</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="grid" class="thumb-grid" aria-label="All slides" hidden></section>
+    <p id="deck-error" class="empty" hidden></p>
+  </main>
+
+  <nav class="filmstrip-wrap" aria-label="Slide thumbnails">
+    <div id="filmstrip" class="filmstrip"></div>
+  </nav>
+
+  <div class="pager">
+    <button id="prev" class="pager-btn" type="button" aria-label="Previous slide">←</button>
+    <button id="next" class="pager-btn" type="button" aria-label="Next slide">→</button>
+  </div>
+
+  <script type="module" src="assets/app.js"></script>
+</body>
+</html>

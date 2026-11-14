@@ -1,0 +1,16 @@
+{
+  "generatedAt": "2026-11-14T21:36:51.478Z",
+  "decks": [
+    {
+      "id": "ai-ml-educational-videos",
+      "title": "AI/ML Educational Videos",
+      "description": "Talks and explainers on how large language models actually work.",
+      "slideCount": 1,
+      "createdAt": "2026-11-14T21:31:00.140Z",
+      "updatedAt": "2026-11-14T21:31:01.271Z",
+      "cover": "thumbnails/I2QhfZ0aVmk.jpg",
+      "coverVideoId": "I2QhfZ0aVmk",
+      "pptx": "exports/ai-ml-educational-videos.pptx"
+    }
+  ]
+}
