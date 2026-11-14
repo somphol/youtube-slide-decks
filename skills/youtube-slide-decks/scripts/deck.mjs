@@ -333,7 +333,17 @@ async function rebuildIndex(home) {
       pptx: hasPptx ? pptxRel : null,
     });
   }
-  await writeJson(path.join(home, 'decks', 'index.json'), index);
+  const file = path.join(home, 'decks', 'index.json');
+  if (await pathExists(file)) {
+    try {
+      const existing = await readJson(file);
+      // Keep the file byte-stable so routine list/verify runs do not dirty git.
+      if (JSON.stringify(existing.decks) === JSON.stringify(index.decks)) return existing;
+    } catch {
+      // malformed catalog: rewrite it
+    }
+  }
+  await writeJson(file, index);
   return index;
 }
 
