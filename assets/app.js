@@ -1,6 +1,9 @@
 /* YouTube Slide Decks — static viewer. No dependencies, no tracking. */
 
+import { buildPptx } from './pptx-core.mjs';
+
 const DATA_ROOT = 'decks/';
+const PPTX_MIME = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
 const $ = (selector, root = document) => root.querySelector(selector);
 
 const state = {
@@ -326,11 +329,53 @@ async function copyCurrentLink() {
   }, 1600);
 }
 
+async function exportDeck() {
+  if (!state.deck || !state.slides.length) return;
+  const button = $('#export');
+  const label = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Preparing…';
+
+  try {
+    const pptx = await buildPptx(state.deck, async (slide, index) => {
+      button.textContent = `Fetching ${index + 1}/${state.slides.length}…`;
+      try {
+        const res = await fetch(slideImage(state.deck.id, slide), { cache: 'force-cache' });
+        if (!res.ok) return null;
+        return new Uint8Array(await res.arrayBuffer());
+      } catch {
+        return null;
+      }
+    });
+
+    button.textContent = 'Saving…';
+    const blob = new Blob([pptx], { type: PPTX_MIME });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${state.deck.id}.pptx`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    button.textContent = 'Downloaded';
+  } catch (error) {
+    console.error('export failed', error);
+    button.textContent = 'Export failed';
+  }
+
+  setTimeout(() => {
+    button.textContent = label;
+    button.disabled = false;
+  }, 1800);
+}
+
 function bindDeckEvents() {
   $('#prev').addEventListener('click', () => step(-1));
   $('#next').addEventListener('click', () => step(1));
   $('#btn-grid').addEventListener('click', () => toggleGrid());
   $('#copy').addEventListener('click', copyCurrentLink);
+  $('#export').addEventListener('click', exportDeck);
 
   const full = $('#btn-full');
   if (!document.fullscreenEnabled) {
@@ -426,10 +471,8 @@ async function bootDeck() {
   }
 
   try {
-    const [deck, catalog] = await Promise.all([loadDeck(id), loadIndex().catch(() => null)]);
-    state.deck = deck;
+    state.deck = await loadDeck(id);
     state.slides = state.deck.slides;
-
     $('#deck-title').textContent = state.deck.title;
     $('#deck-meta').textContent = `${state.slides.length} video${state.slides.length === 1 ? '' : 's'}${
       state.deck.updatedAt ? ` · updated ${formatDate(state.deck.updatedAt)}` : ''
@@ -446,23 +489,6 @@ async function bootDeck() {
     buildGrid();
     bindDeckEvents();
     renderSlide(Number.isFinite(slide) && slide > 0 ? slide - 1 : 0);
-
-    const entry = catalog?.decks.find((d) => d.id === state.deck.id);
-    if (entry?.pptx) {
-      $('#watch').insertAdjacentElement(
-        'afterend',
-        el(
-          'a',
-          {
-            class: 'btn ghost',
-            href: entry.pptx,
-            download: '',
-            title: 'Download the .pptx, then import it into Google Slides',
-          },
-          'PowerPoint'
-        )
-      );
-    }
   } catch (e) {
     showError(e, error);
   }

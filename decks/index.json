@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-14T21:36:51.478Z",
+  "generatedAt": "2026-11-14T21:45:49.088Z",
   "decks": [
     {
       "id": "ai-ml-educational-videos",
@@ -9,8 +9,7 @@
       "createdAt": "2026-11-14T21:31:00.140Z",
       "updatedAt": "2026-11-14T21:31:01.271Z",
       "cover": "thumbnails/I2QhfZ0aVmk.jpg",
-      "coverVideoId": "I2QhfZ0aVmk",
-      "pptx": "exports/ai-ml-educational-videos.pptx"
+      "coverVideoId": "I2QhfZ0aVmk"
     }
   ]
 }

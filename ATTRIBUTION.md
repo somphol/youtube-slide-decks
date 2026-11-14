@@ -3,17 +3,17 @@
 ## Code
 
 The viewer, CLI, and `.pptx` writer in this repository are original work for this project. No
-third-party JavaScript, CSS, fonts, icons or build tooling are bundled. The runtime is Node.js only.
+third-party JavaScript, CSS, fonts, icons or build tooling are bundled. The runtime is Node.js in the
+CLI and a modern browser for the site.
 
 ## Video thumbnails
 
 Every image under `decks/*/thumbnails/` is a YouTube thumbnail uploaded by the channel that published
-the video, retrieved from `i.ytimg.com`. Copyright remains with those creators. They are stored here
-for personal, private reference only.
+the video, retrieved from `i.ytimg.com`. Copyright remains with those creators. They are collected here
+for reference, next to a link to the original video.
 
-This is why the repository stays private and GitHub Pages is not enabled. Do not copy these images into
-a public website, a public repository, or a published deck. If a deck is shared, share the link to the
-video instead.
+If you are a creator and want a thumbnail removed, open an issue or delete the slide with
+`node scripts/deck.mjs remove "<deck>" <video-id>`. Removal is immediate on the next Pages deploy.
 
 ## Metadata
 
@@ -29,5 +29,5 @@ generic CSS shape.
 
 ## Licence
 
-Private project, all rights reserved. No licence is granted for the thumbnails, and none can be
-granted by this repository.
+No licence is granted for the thumbnails, and none can be granted by this repository. The code is
+published as-is, without warranty.

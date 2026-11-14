@@ -1,5 +1,15 @@
 # PowerPoint export and Google Slides
 
+## Two paths, one builder
+
+- **Viewer:** the **Export .pptx** button fetches the thumbnails and calls `assets/pptx-core.mjs` in the
+  browser, then downloads a Blob. No upload, no server.
+- **CLI:** `node scripts/deck.mjs export` calls the same core, with a Node wrapper that reads local
+  images and falls back to `i.ytimg.com`.
+
+Because both routes share `pptx-core.mjs`, a change to geometry or XML is tested once and applies to
+both. Keep that file free of `fs`, `path` and `Buffer`; use `Uint8Array` and the injected `getImage`.
+
 ## What the exporter writes
 
 `export` builds a widescreen `.pptx` (13.333 × 7.5 in, `12192000 × 6858000` EMU) with one slide per
@@ -24,6 +34,9 @@ python3 -m venv .venv && .venv/bin/pip install python-pptx
 .venv/bin/python -c "from pptx import Presentation; p=Presentation('exports/x.pptx'); print(len(p.slides))"
 qlmanage -t -s 1400 -o /tmp/out exports/<deck>.pptx   # macOS Quick Look render
 ```
+
+For the browser path, drive Chrome headless with `Browser.setDownloadBehavior`, click `#export`, and
+validate the downloaded file with the same commands. That is how the viewer export was verified.
 
 `python-pptx` accepts the package when every relationship resolves; Quick Look proves the shapes and
 text actually draw. Neither proves Google Slides fidelity — that needs an upload.

@@ -319,8 +319,6 @@ async function rebuildIndex(home) {
   };
   for (const d of decks) {
     const cover = d.slides.find((s) => s.thumbnail) || d.slides[0];
-    const pptxRel = `exports/${d.id}.pptx`;
-    const hasPptx = await pathExists(path.join(home, pptxRel));
     index.decks.push({
       id: d.id,
       title: d.title,
@@ -330,7 +328,6 @@ async function rebuildIndex(home) {
       updatedAt: d.updatedAt,
       cover: cover ? cover.thumbnail || cover.thumbnailUrl || null : null,
       coverVideoId: cover ? cover.videoId : null,
-      pptx: hasPptx ? pptxRel : null,
     });
   }
   const file = path.join(home, 'decks', 'index.json');
@@ -664,8 +661,6 @@ async function cmdExport() {
     written.push({ deck: deck.id, file, bytes: buffer.length });
   }
 
-  await rebuildIndex(home);
-
   if (flags.json) {
     console.log(JSON.stringify({ outDir, written }, null, 2));
     return;
@@ -778,12 +773,6 @@ async function cmdVerify() {
         const coverPath = entry.cover.startsWith('http') ? null : path.join(home, 'decks', entry.id, entry.cover);
         if (coverPath && !(await pathExists(coverPath))) bad(`catalog: cover missing for ${entry.id}`);
       }
-      if (entry.pptx) {
-        const pptxPath = path.join(home, entry.pptx);
-        if (!(await pathExists(pptxPath))) {
-          warn(`catalog: ${entry.pptx} is not built yet (run: node deck.mjs export)`);
-        }
-      }
     }
   }
 
@@ -826,6 +815,7 @@ async function cmdVerify() {
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
+  '.mjs': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.jpg': 'image/jpeg',

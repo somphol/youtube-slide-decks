@@ -7,19 +7,20 @@ version: 1.0.0
 # YouTube Slide Decks
 
 A deck is a folder of plain JSON plus downloaded thumbnails. A static viewer shows one video per
-slide; an exporter writes a widescreen `.pptx` with the thumbnail, title, channel, duration and a
-clickable YouTube link on every slide.
+slide and has an **Export .pptx** button; an exporter also writes the same widescreen PowerPoint file
+with the thumbnail, title, channel, duration and a clickable YouTube link on every slide.
 
 ## When to use
 
 - The user pastes a YouTube URL with a deck name: “Put this <url> in AI/ML Educational Video Slide deck”.
 - The user wants to see, create, rename, reorder or prune decks.
 - The user wants a PowerPoint file for Google Slides.
-- The user asks to preview the collection.
+- The user asks to preview or publish the collection.
 
 ## The collection
 
 Default home: `~/Projects/youtube-slide-decks` (override with `--home <dir>` or `DECK_HOME`).
+Public site: `https://somphol.github.io/youtube-slide-decks/` (GitHub Pages, repository root).
 The repository is the database:
 
 ```text
@@ -77,19 +78,24 @@ Adding several URLs at once is supported. Re-adding the same video is a no-op un
 
 ## Export to Google Slides
 
+In the viewer, **Export .pptx** builds the file client-side and downloads `<deck-id>.pptx`. Tell the
+user this is the normal path; nothing is uploaded.
+
+From the CLI (bulk or scripted):
+
 ```sh
 node "$H/scripts/deck.mjs" export "AI/ML Educational Video Slide deck"
 ```
 
-Produces `exports/<deck-id>.pptx` and updates the catalog so the viewer shows a **PowerPoint**
-button. Tell the user the import path:
+Produces `exports/<deck-id>.pptx`; `exports/` is gitignored.
+
+Either file imports the same way:
 
 1. Google Drive → New → File upload → choose the `.pptx`.
-2. Right-click → Open with → Google Slides (or Google Slides → File → Import slides for an
-   existing presentation).
+2. Right-click → Open with → Google Slides (or Google Slides → File → Import slides for an existing
+   presentation).
 
-Export is repeatable; rerun after changing a deck. `exports/` is gitignored, so the repository
-stores deck data, not binaries.
+Export is repeatable; rerun after changing a deck.
 
 ## Rules
 
@@ -97,9 +103,9 @@ stores deck data, not binaries.
 - Never invent thumbnails. Missing images fall back to a remote `i.ytimg.com` URL and `verify` warns.
 - Keep deck ids lowercase kebab-case; the CLI handles this. Do not rename deck folders manually.
 - `--hotlink` skips the download and stores the remote thumbnail URL. Use it only when storage matters.
-- Do not enable GitHub Pages for this collection. Thumbnails belong to their creators and a Pages site
-  is public even when the repository is private. Preview with `serve` instead.
-- Publishing is private-only: see `references/publishing.md`.
+- Thumbnails belong to their creators. Keep `ATTRIBUTION.md` accurate; when a creator asks for removal,
+  delete the slide and push. The collection is public, so removal is immediate after deploy.
+- Publish by pushing to `main`; Pages deploys the repository root. See `references/publishing.md`.
 
 ## Verify
 
@@ -115,4 +121,4 @@ Every `FAIL` is a defect. `WARN` on a deck with zero slides and on remote-only t
 - `references/deck-model.md` — JSON schema, invariants, index format, safe changes.
 - `references/thumbnails.md` — YouTube endpoints, quality fallback, metadata, failure modes.
 - `references/google-slides.md` — OOXML package layout, import fidelity, troubleshooting.
-- `references/publishing.md` — private repository, skill sync, backup.
+- `references/publishing.md` — public Pages deployment, MIME types, skill sync, backup.

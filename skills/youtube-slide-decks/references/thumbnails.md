@@ -40,6 +40,7 @@ the file.
 
 ## Legality
 
-Thumbnails are uploaded by channel owners and remain their copyright. Downloading them for a private
-reference deck is one thing; republishing them on a public site is another. Do not enable GitHub Pages
-for a collection that bundles thumbnails, and do not copy the images into a public repository.
+Thumbnails are uploaded by channel owners and remain their copyright. This collection shows them
+publicly for reference, next to a link to the original video. Keep the attribution note visible and
+honour takedown requests by removing the slide. Do not relicense the images or use them as the basis
+of another public gallery.

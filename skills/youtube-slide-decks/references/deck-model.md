@@ -46,15 +46,13 @@
       "createdAt": "...",
       "updatedAt": "...",
       "cover": "thumbnails/I2QhfZ0aVmk.jpg",
-      "coverVideoId": "I2QhfZ0aVmk",
-      "pptx": "exports/ai-ml-educational-videos.pptx"
+      "coverVideoId": "I2QhfZ0aVmk"
     }
   ]
 }
 ```
 
-`cover` and every `thumbnail` are relative to the deck folder. `pptx` is relative to the collection
-root and is `null` when no export exists.
+`cover` and every `thumbnail` are relative to the deck folder.
 
 ## Invariants
 
