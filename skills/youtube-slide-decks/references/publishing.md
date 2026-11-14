@@ -51,6 +51,38 @@ rsync -a --delete ~/.config/opencode/skills/youtube-slide-decks/ skills/youtube-
 Keep them identical. The repository’s `scripts` symlink points into `skills/`, so
 `node scripts/deck.mjs` always runs the canonical code.
 
+## Browser writes
+
+The viewer’s Add / Delete / Tag actions commit through the GitHub REST API. They need a **fine-grained
+personal access token** scoped to this repository with **Contents: Read and write**. The token lives in
+`localStorage` under `ytdecks.token.<owner>/<repo>`, is sent only to `api.github.com`, and can be removed
+with **Forget token**.
+
+Do not commit a token, do not put one in `decks/`, and do not ask a user to paste one into chat.
+
+All API reads use `cache: 'no-store'`. GitHub responses are cacheable, and a stale ref produces a
+`422 Update is not a fast forward` on the next commit.
+
+## Testing writes safely
+
+Do not test write actions on `main`. Create a branch, point a copy of the site at it, and drive the UI:
+
+```sh
+# create a scratch branch from main
+gh api repos/somphol/youtube-slide-decks/git/refs \
+  -f ref=refs/heads/viewer-test -f sha="$(git rev-parse origin/main)"
+
+# copy the site, change the branch meta tag
+rsync -a --exclude .git --exclude exports ./ /tmp/viewer-test-site/
+sed -i '' 's/decks-branch" content="main"/decks-branch" content="viewer-test"/' \
+  /tmp/viewer-test-site/deck.html
+node scripts/deck.mjs serve --home /tmp/viewer-test-site --port 4175
+```
+
+The test copy is static after a commit, so re-download the changed `deck.json`/`index.json` from the
+branch before testing a page that reloads. Delete the branch when finished. This is how add, delete,
+retag, tag rename and tag delete were verified.
+
 ## Updating the viewer
 
 Root `index.html`, `deck.html`, `assets/` are copies of the skill template. Edit

@@ -3,7 +3,7 @@
   "title": "AI/ML Educational Videos",
   "description": "Talks and explainers on how large language models actually work.",
   "createdAt": "2026-11-14T21:31:00.140Z",
-  "updatedAt": "2026-11-14T21:31:01.271Z",
+  "updatedAt": "2026-11-14T22:07:29.247Z",
   "slides": [
     {
       "id": "I2QhfZ0aVmk",
@@ -19,7 +19,12 @@
       "thumbnailUrl": null,
       "thumbnailQuality": "maxresdefault",
       "note": "",
-      "addedAt": "2026-11-14T21:31:01.270Z"
+      "addedAt": "2026-11-14T21:31:01.270Z",
+      "tags": [
+        "llm",
+        "inference",
+        "serving"
+      ]
     }
   ]
 }

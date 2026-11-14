@@ -16,7 +16,7 @@ both. Keep that file free of `fs`, `path` and `Buffer`; use `Uint8Array` and the
 video:
 
 - thumbnail embedded as `ppt/media/imageN.jpg`;
-- kicker (`03 / 12  DECK TITLE`), title, channel · duration, optional note;
+- kicker (`03 / 12  DECK TITLE`), title, channel · duration · #tags, optional note;
 - “▶ Watch on YouTube” as a real external hyperlink, plus the plain URL underneath;
 - the image itself is also clickable;
 - dark background `0B0D10`, accent `FF3D3D`.

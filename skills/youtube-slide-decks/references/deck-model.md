@@ -25,6 +25,7 @@
       "thumbnail": "thumbnails/I2QhfZ0aVmk.jpg",
       "thumbnailUrl": null,
       "thumbnailQuality": "maxresdefault",
+      "tags": ["llm", "inference"],
       "note": "",
       "addedAt": "2026-11-14T05:24:00.000Z"
     }
@@ -48,11 +49,16 @@
       "cover": "thumbnails/I2QhfZ0aVmk.jpg",
       "coverVideoId": "I2QhfZ0aVmk"
     }
+  ],
+  "tags": [
+    { "name": "inference", "count": 1 },
+    { "name": "llm", "count": 1 }
   ]
 }
 ```
 
-`cover` and every `thumbnail` are relative to the deck folder.
+`cover` and every `thumbnail` are relative to the deck folder. `tags` at the top level is computed by
+`tallyTags`; never edit it by hand, and never store tags on a deck.
 
 ## Invariants
 
@@ -62,6 +68,8 @@
 - A video appears at most once per deck. The same video may appear in several decks; each deck keeps
   its own copy of the image under its own thumbnail folder.
 - `slides` order is presentation order. `add` appends; `move` rewrites the array.
+- `tags` are lowercase kebab, max 24 characters, max 8 per slide, unique. `normalizeTags` in
+  `assets/tags.mjs` is the only implementation. `decks/index.json` carries the derived tally.
 - `decks/index.json` is rebuilt on every mutation; deleting a slug from disk is enough to drop a deck
   after `rebuild`, but prefer `delete --yes` so the images go too.
 - Timestamps are ISO 8601 UTC strings.

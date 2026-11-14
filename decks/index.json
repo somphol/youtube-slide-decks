@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-14T21:45:49.088Z",
+  "generatedAt": "2026-11-14T22:07:29.255Z",
   "decks": [
     {
       "id": "ai-ml-educational-videos",
@@ -7,9 +7,23 @@
       "description": "Talks and explainers on how large language models actually work.",
       "slideCount": 1,
       "createdAt": "2026-11-14T21:31:00.140Z",
-      "updatedAt": "2026-11-14T21:31:01.271Z",
+      "updatedAt": "2026-11-14T22:07:29.247Z",
       "cover": "thumbnails/I2QhfZ0aVmk.jpg",
       "coverVideoId": "I2QhfZ0aVmk"
+    }
+  ],
+  "tags": [
+    {
+      "name": "inference",
+      "count": 1
+    },
+    {
+      "name": "llm",
+      "count": 1
+    },
+    {
+      "name": "serving",
+      "count": 1
     }
   ]
 }

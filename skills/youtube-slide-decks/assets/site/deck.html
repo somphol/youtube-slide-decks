@@ -5,17 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Deck — YouTube Slide Decks</title>
   <meta name="color-scheme" content="dark light">
+  <meta name="decks-repo" content="somphol/youtube-slide-decks">
+  <meta name="decks-branch" content="main">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d10'/%3E%3Cpath d='M25 20l20 12-20 12z' fill='%23ff3d3d'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body class="deck-page">
   <header class="deck-bar">
-    <a class="back" href="./"><span aria-hidden="true">←</span> All decks</a>
+    <div class="deck-nav">
+      <a class="back" href="./"><span aria-hidden="true">←</span> Decks</a>
+      <a class="back" href="tags.html">Tags</a>
+    </div>
     <div class="deck-heading">
       <h1 id="deck-title">Deck</h1>
       <p id="deck-meta" class="meta"></p>
     </div>
     <div class="bar-actions">
+      <button id="btn-add" class="btn primary" type="button">+ Add video</button>
       <button id="btn-grid" class="btn ghost" type="button" aria-pressed="false">Grid</button>
       <button id="btn-full" class="btn ghost" type="button">Fullscreen</button>
     </div>
@@ -30,13 +36,16 @@
       </a>
       <div class="slide-info">
         <p id="counter" class="counter"></p>
+        <p id="slide-source" class="source" hidden></p>
         <h2 id="slide-title"></h2>
         <p id="slide-author" class="channel"></p>
+        <div id="slide-tags" class="tag-row"></div>
         <p id="slide-note" class="note" hidden></p>
         <div class="slide-actions">
           <a id="watch" class="btn primary" target="_blank" rel="noopener">Watch on YouTube</a>
           <button id="export" class="btn" type="button" title="Download a PowerPoint file for Google Slides">Export .pptx</button>
           <button id="copy" class="btn" type="button">Copy link</button>
+          <button id="btn-delete" class="btn ghost danger" type="button">Delete</button>
         </div>
       </div>
     </section>
@@ -53,6 +62,89 @@
     <button id="prev" class="pager-btn" type="button" aria-label="Previous slide">←</button>
     <button id="next" class="pager-btn" type="button" aria-label="Next slide">→</button>
   </div>
+
+  <dialog id="add-dialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-head">
+        <h2>Add a video</h2>
+        <button class="icon-btn" value="cancel" aria-label="Close">×</button>
+      </header>
+      <label class="field">
+        <span>YouTube link</span>
+        <input id="add-url" type="url" placeholder="https://www.youtube.com/watch?v=…" autocomplete="off" spellcheck="false">
+      </label>
+      <label class="field">
+        <span>Tags <em>optional, comma separated</em></span>
+        <input id="add-tags" type="text" placeholder="llm, inference" autocomplete="off" spellcheck="false" maxlength="200">
+      </label>
+      <label class="field">
+        <span>Note <em>optional</em></span>
+        <input id="add-note" type="text" placeholder="Why this video matters" autocomplete="off" maxlength="200">
+      </label>
+      <p id="add-status" class="status" hidden></p>
+      <div class="modal-actions">
+        <button id="add-submit" class="btn primary" type="button">Add video</button>
+        <button class="btn ghost" value="cancel">Cancel</button>
+      </div>
+      <p class="hint">Commits the video, its thumbnail and the catalog to GitHub in one commit.</p>
+    </form>
+  </dialog>
+
+  <dialog id="connect-dialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-head">
+        <h2>Connect GitHub</h2>
+        <button class="icon-btn" value="cancel" aria-label="Close">×</button>
+      </header>
+      <p class="modal-text">
+        Writes are committed as you. Create a fine-grained token for
+        <code id="connect-repo">this repository</code> with <strong>Contents: Read and write</strong>.
+        It stays in this browser and is only sent to api.github.com.
+      </p>
+      <label class="field">
+        <span>Fine-grained token</span>
+        <input id="connect-token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
+      </label>
+      <p id="connect-status" class="status" hidden></p>
+      <div class="modal-actions">
+        <button id="connect-save" class="btn primary" type="button">Save token</button>
+        <button class="btn ghost" value="cancel">Cancel</button>
+        <button id="connect-clear" class="btn ghost tiny" type="button">Forget token</button>
+      </div>
+      <p class="hint">GitHub → Settings → Developer settings → Fine-grained tokens → Contents: Read and write.</p>
+    </form>
+  </dialog>
+
+  <dialog id="confirm-dialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-head">
+        <h2>Confirm</h2>
+        <button class="icon-btn" value="cancel" aria-label="Close">×</button>
+      </header>
+      <p id="confirm-message" class="modal-text"></p>
+      <div class="modal-actions">
+        <button id="confirm-yes" class="btn danger" type="button">Delete</button>
+        <button id="confirm-cancel" class="btn ghost" value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="prompt-dialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-head">
+        <h2 id="prompt-title">Edit</h2>
+        <button class="icon-btn" value="cancel" aria-label="Close">×</button>
+      </header>
+      <label class="field">
+        <span>Tags <em>comma separated</em></span>
+        <input id="prompt-input" type="text" autocomplete="off" spellcheck="false" maxlength="200">
+      </label>
+      <div class="modal-actions">
+        <button id="prompt-save" class="btn primary" type="button">Save</button>
+        <button id="prompt-cancel" class="btn ghost" value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
 
   <script type="module" src="assets/app.js"></script>
 </body>

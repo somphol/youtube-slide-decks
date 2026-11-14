@@ -147,7 +147,7 @@ function slideXml(deck, slide, position, total, hasImage) {
     )
   );
 
-  const metaParts = [slide.author, slide.duration].filter(Boolean);
+  const metaParts = [slide.author, slide.duration, (slide.tags || []).map((tag) => `#${tag}`).join(' ')].filter(Boolean);
   const metaY = titleY + 2130000;
   shapes.push(
     textBox(6, 'Channel', TEXT_X, metaY, TEXT_W, 700000, paragraph(run(metaParts.join('  ·  ') || 'YouTube', { size: 1400, color: MUTED })))

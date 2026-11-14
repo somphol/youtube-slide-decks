@@ -17,6 +17,7 @@ import os from 'node:os';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { buildPptx } from './pptx.mjs';
+import { normalizeTags, tallyTags } from '../assets/site/assets/tags.mjs';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_DIR = path.resolve(SCRIPT_DIR, '..', 'assets', 'site');
@@ -304,6 +305,7 @@ async function buildSlide(videoId, deckDir, options) {
     thumbnailUrl: downloaded ? null : remote,
     thumbnailQuality: downloaded ? downloaded.quality : null,
     note: options.note || '',
+    tags: normalizeTags(options.tags || ''),
     addedAt: iso(),
   };
 }
@@ -316,6 +318,7 @@ async function rebuildIndex(home) {
   const index = {
     generatedAt: iso(),
     decks: [],
+    tags: tallyTags(decks),
   };
   for (const d of decks) {
     const cover = d.slides.find((s) => s.thumbnail) || d.slides[0];
@@ -335,7 +338,12 @@ async function rebuildIndex(home) {
     try {
       const existing = await readJson(file);
       // Keep the file byte-stable so routine list/verify runs do not dirty git.
-      if (JSON.stringify(existing.decks) === JSON.stringify(index.decks)) return existing;
+      if (
+        JSON.stringify(existing.decks) === JSON.stringify(index.decks) &&
+        JSON.stringify(existing.tags || []) === JSON.stringify(index.tags)
+      ) {
+        return existing;
+      }
     } catch {
       // malformed catalog: rewrite it
     }
@@ -493,6 +501,7 @@ async function cmdAdd() {
     process.stderr.write(`fetching ${videoId} … `);
     const slide = await buildSlide(videoId, deckDir, {
       note: typeof flags.note === 'string' ? flags.note : '',
+      tags: typeof flags.tag === 'string' ? flags.tag : '',
       hotlink: Boolean(flags.hotlink),
     });
     process.stderr.write(`${slide.title}\n`);
@@ -573,6 +582,24 @@ async function cmdRemove() {
   }
   await saveDeck(home, deck);
   console.log(`removed from ${deck.title}: ${removed.title} (${removed.videoId})`);
+}
+
+async function cmdTag() {
+  const home = await requireHome();
+  const [deckQuery, target, ...tagWords] = rest;
+  if (!deckQuery || !target) fail('usage: deck.mjs tag "Deck name" <video-id|url|index> "tag1, tag2"');
+  const deck = await deckFromQuery(home, deckQuery);
+  const videoId = videoIdFrom(target);
+  let index = videoId ? deck.slides.findIndex((s) => s.videoId === videoId) : -1;
+  if (index < 0 && /^\d+$/.test(target)) index = Number(target) - 1;
+  if (index < 0 || index >= deck.slides.length) fail(`"${target}" is not a slide in ${deck.id}`);
+
+  const slide = deck.slides[index];
+  slide.tags = normalizeTags(tagWords.join(' '));
+  await saveDeck(home, deck);
+  console.log(
+    `tags for "${slide.title}": ${slide.tags.length ? slide.tags.map((t) => `#${t}`).join(' ') : '(none)'}`
+  );
 }
 
 async function cmdMove() {
@@ -747,6 +774,16 @@ async function cmdVerify() {
       } else {
         bad(`${where}: no thumbnail and no thumbnailUrl`);
       }
+      if (slide.tags !== undefined) {
+        if (!Array.isArray(slide.tags)) bad(`${where}: tags is not an array`);
+        else {
+          if (slide.tags.length > 8) bad(`${where}: more than 8 tags`);
+          if (new Set(slide.tags).size !== slide.tags.length) bad(`${where}: duplicate tags`);
+          if (JSON.stringify(normalizeTags(slide.tags)) !== JSON.stringify(slide.tags)) {
+            bad(`${where}: tags are not normalised`);
+          }
+        }
+      }
       if (!slide.title) warn(`${where}: empty title`);
     }
     ok(`${deck.id}: ${deck.slides.length} slide${deck.slides.length === 1 ? '' : 's'}`);
@@ -764,6 +801,12 @@ async function cmdVerify() {
       bad('decks/index.json is out of sync with deck folders (run: node deck.mjs rebuild)');
     } else {
       ok('catalog matches deck folders');
+    }
+    const tally = tallyTags(decks);
+    if (JSON.stringify(index.tags || []) !== JSON.stringify(tally)) {
+      bad('decks/index.json tag counts are stale (run: node deck.mjs rebuild)');
+    } else {
+      ok(`catalog tags match (${tally.length})`);
     }
     for (const entry of index.decks) {
       const deck = decks.find((d) => d.id === entry.id);
@@ -867,9 +910,10 @@ function usage() {
   init [--home DIR]                     create a collection
   list [--json]                         list decks
   create "Title" [--description "..."]  create an empty deck
-  add "Deck" <url...> [--create] [--note "..."] [--force] [--hotlink]
+  add "Deck" <url...> [--create] [--note "..."] [--tag "a,b"] [--force] [--hotlink]
                                         add videos (downloads thumbnails)
   remove "Deck" <video-id|url|index>    remove a slide
+  tag "Deck" <video-id|index> "a,b"     replace a slide's tags
   move "Deck" <video-id|index> <pos>    reorder a slide
   rename "Deck" "New title"             rename a deck
   delete "Deck" --yes                   delete a deck
@@ -888,6 +932,7 @@ const commands = {
   create: cmdCreate,
   add: cmdAdd,
   remove: cmdRemove,
+  tag: cmdTag,
   move: cmdMove,
   rename: cmdRename,
   delete: cmdDelete,

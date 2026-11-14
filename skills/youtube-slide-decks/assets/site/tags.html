@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tags — YouTube Slide Decks</title>
+  <meta name="color-scheme" content="dark light">
+  <meta name="decks-repo" content="somphol/youtube-slide-decks">
+  <meta name="decks-branch" content="main">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d10'/%3E%3Cpath d='M25 20l20 12-20 12z' fill='%23ff3d3d'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body class="tags-page">
+  <header class="site-header">
+    <a class="brand" href="./">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Slide Decks</span>
+    </a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="./">Decks</a>
+      <a href="tags.html" aria-current="page">Tags</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section class="hero compact">
+      <p class="eyebrow">Manage</p>
+      <h1>Tags</h1>
+      <p class="lede">Tags collect videos across decks. Open one to step through every video that carries it.</p>
+    </section>
+
+    <div class="tag-toolbar">
+      <p id="tag-stats" class="stats-text"></p>
+      <label class="search">
+        <span class="visually-hidden">Search tags</span>
+        <input id="tag-search" type="search" placeholder="Search tags" autocomplete="off" spellcheck="false">
+      </label>
+    </div>
+
+    <div class="manage-bar">
+      <p id="manage-status" class="status" hidden></p>
+      <button id="connect-btn" class="btn ghost" type="button">Connect GitHub to rename or delete</button>
+    </div>
+
+    <div id="tag-grid" class="tag-grid" aria-live="polite"></div>
+    <p id="tags-empty" class="empty" hidden></p>
+    <p id="tags-error" class="empty" hidden></p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Renaming and deleting a tag commits one change to the catalog and every affected deck.</p>
+  </footer>
+
+  <dialog id="connect-dialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-head">
+        <h2>Connect GitHub</h2>
+        <button class="icon-btn" value="cancel" aria-label="Close">×</button>
+      </header>
+      <p class="modal-text">
+        Writes are committed as you. Create a fine-grained token for
+        <code id="connect-repo">this repository</code> with <strong>Contents: Read and write</strong>.
+        It stays in this browser.
+      </p>
+      <label class="field">
+        <span>Fine-grained token</span>
+        <input id="connect-token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
+      </label>
+      <p id="connect-status" class="status" hidden></p>
+      <div class="modal-actions">
+        <button id="connect-save" class="btn primary" type="button">Save token</button>
+        <button class="btn ghost" value="cancel">Cancel</button>
+        <button id="connect-clear" class="btn ghost tiny" type="button">Forget token</button>
+      </div>
+      <p class="hint">GitHub → Settings → Developer settings → Fine-grained tokens → Contents: Read and write.</p>
+    </form>
+  </dialog>
+
+  <dialog id="confirm-dialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-head">
+        <h2>Confirm</h2>
+        <button class="icon-btn" value="cancel" aria-label="Close">×</button>
+      </header>
+      <p id="confirm-message" class="modal-text"></p>
+      <div class="modal-actions">
+        <button id="confirm-yes" class="btn danger" type="button">Delete</button>
+        <button id="confirm-cancel" class="btn ghost" value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="prompt-dialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-head">
+        <h2 id="prompt-title">Edit</h2>
+        <button class="icon-btn" value="cancel" aria-label="Close">×</button>
+      </header>
+      <label class="field">
+        <span>Tag</span>
+        <input id="prompt-input" type="text" autocomplete="off" spellcheck="false" maxlength="60">
+      </label>
+      <div class="modal-actions">
+        <button id="prompt-save" class="btn primary" type="button">Save</button>
+        <button id="prompt-cancel" class="btn ghost" value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="assets/tags.js"></script>
+</body>
+</html>
